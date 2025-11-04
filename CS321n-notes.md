@@ -511,7 +511,7 @@ RNN的特殊之处在于其**循环特性**，即其具有内部隐藏状态，�
 
 ![fe368820-eaf5-4bea-ae2c-3d6b54149835](F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\fe368820-eaf5-4bea-ae2c-3d6b54149835.png)
 
-#### Vanilla RNN：
+### Vanilla RNN
 
 <img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251003224850377.png" alt="image-20251003224850377" style="zoom:80%;" />
 
@@ -542,6 +542,75 @@ x_seq = [0, 1, 0, 1, 1, 1, 0, 1, 1]
 
 h_t_prev = np.array([[0], [0], [1]]) # 隐藏状态初始化为[0,0,1]
 
-
+for t,x in enumerate(x_seq):
+    h_t = relu(w_hh @ h_t_prev + (w_xh @ x))
+    y_t = relu(w_yh @ h_t)
+    h_t_prev = h_t
 ```
+
+如何计算梯度？
+
+<img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251102231943854.png" alt="image-20251102231943854" width=32%/><img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\ede088f0442bfa4d42afb1341e7b58fb.png" alt="ede088f0442bfa4d42afb1341e7b58fb" width="32%" hidth="60"/><img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251102232400752.png" alt="image-20251102232400752" width="32%" />
+
+如果一次性对一个完整序列做前向+反向传播更新，每次处理的数据量可能太大，可以把序列分为多个chunk
+
+<img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251104233118907.png" alt="image-20251104233118907" style="zoom:80%;" />
+
+<img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251104233202308.png" alt="image-20251104233202308" style="zoom:80%;" />
+
+### Character-level Language Model
+
+一个简单的例子，假设字母表为 [h, e, l, o]，期望训练结果为=="输入序列hell时，能预测下一个字母为o"==
+
+<img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251104234542455.png" alt="image-20251104234542455" style="zoom:80%;" />
+
+一般不会把 one-hot 编码直接输入模型，而是先经过一个专门的 embedding layer
+
+embedding layer 是一个D×D的大矩阵，D是可能的输入数量
+
+<img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105000858352.png" alt="image-20251105000858352" style="zoom:80%;" />
+
+### RNN tradeoffs
+
+![image-20251105004147400](F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105004147400.png)
+
+### Implementations
+
+#### Image Captioning
+
+由CNN等图像encoder提取图像特征，然后利用RNN来理解图像语义
+
+<img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105004714401.png" alt="image-20251105004714401" width="32%"><img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105005055148.png" alt="image-20251105005055148" width="32%"/> <img src="F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105005201053.png" alt="image-20251105005201053" width="32%"/>
+
+#### Visual Question Answering (VQA)
+
+#### Visual Dialog: Conversations about images
+
+#### Visual Language Navigation
+
+### Multilayers RNN
+
+多层隐藏层，每一层的输入x替换为上一层的输出y，注意每一层使用的权重不同
+
+![image-20251105005922904](F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105005922904.png)
+
+### RNN Variants: Long Short Term Memory (LSTM)
+
+Vanilla RNN在梯度传播的时候会遇到**梯度消失/梯度爆炸**的问题
+
+![image-20251105011026326](F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105011026326.png)
+
+![image-20251105011051782](F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105011051782.png)
+
+![image-20251105011119670](F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105011119670.png)
+
+梯度爆炸还可以尝试用 Gradient clipping 来归一化一下，梯度消失是人们尝试改进RNN结构的主要原因
+
+![image-20251105012339207](F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105012339207.png)
+
+![image-20251105012447020](F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105012447020.png)
+
+![image-20251105012517673](F:\王梓恒\学习资料\Machine_Learning\Deep_Learning\CV\CS231n\images\image-20251105012517673.png)
+
+## Lec8 Attention and Transformers
 
